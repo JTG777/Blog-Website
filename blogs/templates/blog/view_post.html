@@ -1,0 +1,124 @@
+{% extends 'blog/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container my-4">
+    <!-- Blog Post -->
+    <div class="row">
+        <div class="col-md-8">
+            <article class="blog-post">
+                <!-- Post Title -->
+                <h2 class="display-4 mb-3">{{ post.title }}</h2>
+                
+                <!-- Post Meta (Author and Date) -->
+                <p class="blog-post-meta mb-3">
+                    <span>{{ post.updated_at|date:'M d, Y' }}</span> by 
+                    <a href="#">{{ post.author.username }}</a>
+                     
+                     <a href="{% url 'blog:like_post' post.id %}"><button class="btn btn-block btn-primary"><i class="fa fa-thumbs-up">Like<span> {{like_count}} </span></i> </button></a>
+                </p>
+
+                <!-- Edit and Delete Links (Visible only to the author) -->
+                <div class="d-flex justify-content-between align-items-center">
+                    {% if post.author == user %}
+                <div class="d-flex justify-content-start mb-4">
+                    <a href="{% url 'blog:edit_post' post.id %}" class="btn btn-primary me-2">Edit</a>
+                    <a href="{% url 'blog:delete_post' post.id %}" class="btn btn-danger">Delete</a>
+                </div>
+                {% endif %}
+                <div  class="social-share d-flex mb-4 gap-2">
+                    <p class="pe-2">Share this post:</p>
+                    
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-primary">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" target="_blank" class="btn btn-info">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?url={{ request.build_absolute_uri }}&title={{ post.title }}" target="_blank" class="btn btn-secondary">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+
+                </div>
+
+                </div>
+            
+                
+
+                
+                
+            </article>
+        </div>
+
+        <!-- Image and Content Section -->
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Image Section -->
+                    <img src="{{ post.image.url }}" class="img-fluid rounded border" alt="{{ post.title }}">
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Content Section -->
+                    <p class="mt-4">{{ post.content }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Tags Section -->
+    <div class="tags mb-4">
+        {% for tag in tags %}
+            <span class="badge bg-secondary me-2">{{ tag.name }}</span>
+        {% empty %}
+            <span class="badge bg-light">No Tags</span>
+        {% endfor %}
+    </div>
+
+    <!-- Comments Section -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <strong>Comments</strong>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                {% for comment in comments %}
+                    {% if comment.author.profile.profile_picture %}
+                    <div class="list-group-item d-flex gap-2">
+                        <img style="width: 30px; height: 30px; object-fit: cover;" class="rounded-circle" src="{{comment.author.profile.profile_picture.url}}" alt="">
+                        {% else %}
+                        <img style="width: 30px; height: 30px; object-fit: cover;" class="rounded-circle" src="/media/profile_pic/No_Image_Available.jpg" alt="Default image">
+                        {% endif %}
+                        <p> by {{comment.author.username}}</p>
+                    <div class="d-block">
+                        <small><li class="list-group-item">- {{ comment.text }}</li></small>
+                            
+                     </div>    
+                        
+                    </div>
+                    
+                    
+                {% empty %}
+                    <p class="text-muted">There are no comments yet.</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Comment Form -->
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <form action="" method="post">
+                {% csrf_token %}
+                {% bootstrap_form comment_form %}
+                {% bootstrap_button button_type='submit' content="Add Comment" class="btn btn-success" %}
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

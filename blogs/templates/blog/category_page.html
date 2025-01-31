@@ -1,0 +1,44 @@
+{% extends 'blog/base.html' %}
+
+{% block page_header %}
+<div class="container">
+
+<h3>{{category.name}}</h3>
+<hr>
+{% endblock page_header %}
+
+
+{% block content %}
+
+<div class="row">
+{% for post in posts %}
+
+<div class="col-md-3">
+    <div class="card" style="width: 18rem;">
+        <img src="{{post.image.url}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{post.title}}</h5>
+          <p class="card-text">{{post.content|slice:':80'}}...</p>
+          <a href="{% url 'blog:view_post' post.slug %}" class="btn btn-primary">View Blog</a>
+        </div>
+      </div>
+
+</div>
+
+{% empty %}
+<p>There are no blogs from {{category.name}} Category</p>
+<p>You want to add new blog <a href="{% url 'blog:add_post' %}">Click here</a></p> 
+
+
+{% endfor %}
+
+</div>
+
+
+
+</div>
+
+
+{% endblock %}
+    
+

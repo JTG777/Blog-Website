@@ -1,0 +1,45 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+ {% include 'sidebar.html' %}
+      
+      <div class="col-md-8">
+        <!-- Profile Card -->
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>{{ profile.user.username }}'s Profile</h2>
+            </div>
+            <div class="card-body">
+                <!-- Profile Picture -->
+                {% if profile.profile_picture %}
+                <div class="text-center mb-4">
+                    <img src="{{profile.profile_picture.url}}" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle" alt="Profile Picture" width="150">
+                </div>
+                {% else %}
+                <div class="text-center mb-4">
+                    <img src="/media/profile_pic/No_Image_Available.jpg" style="width: 150px; height: 150px; object-fit: cover;" class="rounded-circle" alt="Profile Picture" width="150">
+                </div>
+
+                {% endif %}
+                <div class="mb-3">
+                    <h5 class="d-inline ">Date of Birth : </h5> <span>{{profile.date_of_birth}}</span>
+
+                </div>
+                
+                <!-- Bio Section -->
+                <h4 class="mb-3">Bio</h4>
+                <hr>
+                <p>{{ profile.bio|default:"No bio provided." }}</p>
+                
+                <!-- Links (Edit Profile, etc.) -->
+                <div class="mt-4 text-center">
+                    <a href="{% url 'accounts:edit_profile' %}" class="btn btn-warning">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+      
+{% endblock %}
